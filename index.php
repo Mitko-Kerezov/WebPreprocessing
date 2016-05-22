@@ -35,8 +35,7 @@ if(isset($_POST['btn-login']))
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Coding Cage - Login & Registration System</title>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
-<link rel="stylesheet" href="style.css" type="text/css" />
+<link href="bootstrap/css/bootstrap-default.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
 
