@@ -1,19 +1,22 @@
 <?php
-session_start();
-
-if(!isset($_SESSION['userSession']))
+if(!isset($_SESSION))
 {
-	header("Location: index.php");
+    session_start();
 }
-else if(isset($_SESSION['userSession'])!="")
+
+if(!isset($_SESSION['user-id']))
 {
-	header("Location: home.php");
+	header('Location: index.php');
+}
+else if(isset($_SESSION['user-id'])!='')
+{
+	header('Location: home.php');
 }
 
 if(isset($_GET['logout']))
 {
 	session_destroy();
-	unset($_SESSION['userSession']);
-	header("Location: index.php");
+	unset($_SESSION['user-id']);
+	header('Location: index.php');
 }
 ?>

@@ -1,9 +1,16 @@
 <?php
-session_start();
-if(isset($_SESSION['userSession'])!="") {
-	header("Location: home.php");
+if(!isset($_SESSION))
+{
+    session_start();
 }
-include_once 'dbconnect.php';
+
+require_once('../redirecting.php');
+
+if(isset($_SESSION['user-id'])!='') {
+	redirect_to_index();
+}
+
+require_once('dbconnect.php');
 
 if(isset($_POST['btn-signup']))
 {
@@ -32,17 +39,17 @@ if(isset($_POST['btn-signup']))
 				</div>";
 	}
 
-	$MySQLi_CON->close();
-}
+	}
+
 $title = 'Registration';
 $hide_menu = true;
 require_once('layout/header.php');
 ?>
 <div class="signin-form">
 
-	<form class="form-signin" method="post" id="register-form">
+	<form method="post" id="register-form">
 
-		<h2 class="form-signin-heading">Sign Up</h2><hr />
+		<h2>Sign Up</h2><hr />
 
 		<?php
 		if(isset($msg)){

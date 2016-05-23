@@ -1,0 +1,13 @@
+a {
+    color: black;
+    text-decoration: inherit;
+}
+
+a:hover {
+    color: gray;
+    text-decoration: inherit;
+}
+
+.glyphicon-plus-sign {
+    font-size: 3em;
+}

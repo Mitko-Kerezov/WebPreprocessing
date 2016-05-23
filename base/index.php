@@ -1,11 +1,14 @@
 <?php
-session_start();
-include_once 'dbconnect.php';
-
-if(isset($_SESSION['userSession'])!="")
+if(!isset($_SESSION))
 {
-	header("Location: home.php");
-	exit;
+    session_start();
+}
+
+require_once('db_communication/dbconnect.php');
+require_once('../redirecting.php');
+
+if(isset($_SESSION['user-id'])!='') {
+	redirect_to_home();
 }
 
 if(isset($_POST['btn-login']))
@@ -17,7 +20,7 @@ if(isset($_POST['btn-login']))
 	$row=$query->fetch_array();
 
 	if(password_verify($upass, $row['password'])) {
-		$_SESSION['userSession'] = $row['user_id'];
+		$_SESSION['user-id'] = $row['user_id'];
 		header("Location: home.php");
 	} else {
 		$msg = "<div class='alert alert-danger'>
@@ -25,7 +28,6 @@ if(isset($_POST['btn-login']))
 				</div>";
 	}
 
-	$MySQLi_CON->close();
 
 }
 

@@ -9,6 +9,7 @@
         #else
         <link href="bootstrap/css/bootstrap-default.min.css" rel="stylesheet" media="screen">
         #endif
+        <link href="layout/style.css" rel="stylesheet" media="screen">
     </head>
 
 
@@ -25,14 +26,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="http://www.codingcage.com">Web preprocessing</a>
+                <a class="navbar-brand" href="/webpreprocessing/website">Web preprocessing</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="#">Menu item</a></li>
+                    <li><a href="/webpreprocessing/website/variables.php">Variables</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp; <?php echo $userRow['username']; ?></a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp; <?php echo $user_row['username']; ?></a></li>
                     <li><a href="logout.php?logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp; Logout</a></li>
                 </ul>
                 </div>
