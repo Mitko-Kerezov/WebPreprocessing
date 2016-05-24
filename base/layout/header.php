@@ -4,8 +4,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?php echo $title; ?></title>
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-        #ifdef CYBORG
+        #if CYBORG
         <link href="bootstrap/css/bootstrap-cyborg.min.css" rel="stylesheet" media="screen">
+        #elif CERULEAN
+        <link href="bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet" media="screen">
+        #elif READABLE
+        <link href="bootstrap/css/bootstrap-readable.min.css" rel="stylesheet" media="screen">
         #else
         <link href="bootstrap/css/bootstrap-default.min.css" rel="stylesheet" media="screen">
         #endif
@@ -33,7 +37,15 @@
                     <li><a href="/webpreprocessing/website/variables.php">Variables</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp; <?php echo $user_row['username']; ?></a></li>
+                    <li>
+                        #ifdef PROFILE
+                        <a href="/webpreprocessing/website/profile.php">
+                        #else
+                        <a href="#">
+                        #endif
+                            <span class="glyphicon glyphicon-user"></span>&nbsp; <?php echo $user_row['username']; ?>
+                        </a>
+                    </li>
                     <li><a href="logout.php?logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp; Logout</a></li>
                 </ul>
                 </div>

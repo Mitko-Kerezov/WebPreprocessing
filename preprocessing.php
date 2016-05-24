@@ -6,10 +6,22 @@ if(!isset($_SESSION))
 
 require_once('constants.php');
 
-function finish_if(&$text_body, &$i, &$output, &$substituition_map, $switch){
+function finish_if(&$text_body, &$i, &$output, &$substituition_map, $switch) {
     while(++$i<count($text_body)){
         $text_body[$i] = trim($text_body[$i]);
-        if($switch){
+        if ($switch === 2) {
+            if(preg_match("/^#ifdef (.*)$/", $text_body[$i], $match)){
+                finish_if($text_body, $i, $output, $substituition_map, 2);
+                continue;
+            } else if(preg_match("/^#ifndef (.*)$/", $text_body[$i], $match)){
+                finish_if($text_body, $i, $output, $substituition_map, 2);
+                continue;
+            } else if(preg_match("/^#endif$/", $text_body[$i], $match)){
+                return;
+            }
+
+            continue;
+        } else if($switch){
             $match = array();
             if(preg_match("/^#define (.*) (.*)$/", $text_body[$i], $match)){
                 $substituition_map[$match[1]] = $match[2];
@@ -27,7 +39,7 @@ function finish_if(&$text_body, &$i, &$output, &$substituition_map, $switch){
                 finish_if($text_body, $i, $output, $substituition_map, !$substituition_map[$match[1]]);
                 continue;
             } else if(preg_match("/^#elif (.*)$/", $text_body[$i], $match)){
-                finish_if($text_body, $i, $output, $substituition_map, eval("return " . $match[1] . ";"));
+                finish_if($text_body, $i, $output, $substituition_map, 2);
                 continue;
             } else if(preg_match("/^#endif$/", $text_body[$i], $match)){
                 return;
@@ -41,14 +53,14 @@ function finish_if(&$text_body, &$i, &$output, &$substituition_map, $switch){
             }
 
             if(preg_match("/^#if (.*)$/", $text_body[$i], $match)){
-                finish_if($text_body, $i, $output, $substituition_map, eval("return " . $match[1] . ";"));
+                finish_if($text_body, $i, $output, $substituition_map, $match[1]);
             } else{
-                $output = $output . $text_body[$i] . "\n";
+                $output .= $text_body[$i] . "\n";
             }
         } else if(preg_match("/^#else$/", $text_body[$i], $match)){
             $switch = 1;
         } else if(preg_match("/^#elif (.*)$/", $text_body[$i], $match)){
-            finish_if($text_body, $i, $output, $substituition_map, eval("return " . $match[1] . ";"));
+            $switch =  isset($substituition_map[$match[1]]) && $substituition_map[$match[1]];
         } else if(preg_match("/^#endif$/", $text_body[$i], $match)){
             return;
         }
@@ -73,18 +85,21 @@ function get_preprocessed_text($file_name, $user_variables_text='') {
             unset($substituition_map[$match[1]]);
             continue;
         } else if(preg_match("/^#ifdef (.*)$/", $text_body[$i], $match)){
-            if(key_exists($match[1],$substituition_map)){
+            if(key_exists($match[1], $substituition_map)){
                 finish_if($text_body, $i, $output, $substituition_map, 1);
             } else{
                 finish_if($text_body, $i, $output, $substituition_map, 0);
             }
             continue;
         } else if(preg_match("/^#ifndef (.*)$/", $text_body[$i], $match)){
-            if(key_exists($match[1],$substituition_map)){
+            if(key_exists($match[1], $substituition_map)){
                 finish_if($text_body, $i, $output, $substituition_map, 0);
             } else{
                 finish_if($text_body, $i, $output, $substituition_map, 1);
             }
+            continue;
+        } else if(preg_match("/^#if (.*)$/", $text_body[$i], $match)) {
+            finish_if($text_body, $i, $output, $substituition_map, isset($substituition_map[$match[1]]) && $substituition_map[$match[1]]);
             continue;
         } else if(preg_match("/^#el(.*)$/", $text_body[$i], $match)){
             echo "Parse error\n";
@@ -95,12 +110,7 @@ function get_preprocessed_text($file_name, $user_variables_text='') {
             $text_body[$i] = preg_replace("/".preg_quote($key)."/", $value, $text_body[$i]);
         }
 
-        if(preg_match("/^#if (.*)$/", $text_body[$i], $match)){
-            finish_if($text_body, $i, $output, $substituition_map, eval("return " . $match[1] . ";"));
-        }
-        else{
-            $output = $output . $text_body[$i] . "\n";
-        }
+        $output .= $text_body[$i] . "\n";
     }
 
     return $output;
@@ -139,7 +149,7 @@ function create_website() {
     create_dir_safe(_WEBSITE_DIRECTORY);
     $user_variables_text = '';
     if (isset($_SESSION['user-id'])) {
-        require('base/db_communication/data.php');
+        require_once(__DIR__.DIRECTORY_SEPARATOR.'base'.DIRECTORY_SEPARATOR.'db_communication'.DIRECTORY_SEPARATOR.'data.php');
         if (isset($variables)) {
             foreach ($variables as $index => $var_arr) {
                 $user_variables_text .= '#define '.$var_arr['var_key'].' '.$var_arr['var_value']."\n";
@@ -150,4 +160,5 @@ function create_website() {
     create_website_recursive(_BASE_DIRECTORY, $user_variables_text);
 }
 
+// create_website();
 ?>
