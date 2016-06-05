@@ -10,7 +10,7 @@ if(isset($_SESSION['user-id'])!='') {
 	redirect_to_index();
 }
 
-require_once('dbconnect.php');
+require_once('db_communication/dbconnect.php');
 
 if(isset($_POST['btn-signup']))
 {
